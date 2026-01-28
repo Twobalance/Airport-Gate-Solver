@@ -75,19 +75,16 @@ This chart visualizes the "operational pressure" on the gate system, combining t
 *   `images/` folder containing all high-resolution analytical visualizations.
 
 ### Installation
-1.  **Clone the repository**
-2.  **Initialize Environment:**
+
+1.  **Initialize Environment:**
     ```bash
     python3 -m venv venv
     source venv/bin/activate
     pip install -r requirements.txt
     ```
-3.  **Execute Analysis:**
+2.  **Execute Analysis:**
     ```bash
     python3 run_model.py
     ```
 
 ---
-
-## 🎓 Academic Context
-This project was developed for academic purposes to demonstrate the application of **Operations Research** in transportation logistics. It showcases the transition from data-driven demand modeling to prescriptive analytics using industry-standard optimization solvers.
