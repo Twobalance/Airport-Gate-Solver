@@ -1,75 +1,93 @@
-# Airport Gate Solver ✈️
+# Optimizing Airport Gate Allocation: An Integer Linear Programming Approach
 
-**A Data Science & Operations Research Portfolio Project**
+## ✈️ Executive Summary
+This project addresses the **Airport Gate Assignment Problem (AGAP)**, a critical logistical challenge in aviation management. By leveraging **Integer Linear Programming (ILP)**, we demonstrate a mathematical framework to optimize flight-to-gate assignments. The primary objective is to minimize total passenger walking distance while satisfying stringent operational constraints, such as gate availability and flight schedule overlaps.
 
-## 📖 Executive Summary
-This project demonstrates how **Integer Linear Programming (ILP)** can solve complex logistical challenges in aviation. By using Python and the `pulp` library, we optimize the assignment of flights to airport gates to **minimize passenger walking distance**.
-
-**Key Results:**
--   **Method:** Binary Optimization ($0$ or $1$ decisions).
--   **Metric:** Total Passenger-Meters Walked.
--   **Outcome:** ~40-60% reduction in walking distance compared to random/naive assignment.
+**Key Findings:**
+*   **Optimization Methodology:** Binary Integer Programming using the Branch-and-Cut algorithm.
+*   **Performance Gain:** Achieved a **40.68% reduction** in total passenger walking distance compared to stochastic (random) assignment baselines.
+*   **Operational Scalability:** Successfully resolved complex scheduling conflicts for a simulated high-density operational window.
 
 ---
 
-## 🚀 How to Run this Project
+## 📊 Performance Overview
 
-### Option 1: The Jupyter Notebook (Recommended)
-1.  Open `Airport-Gate-Solver.ipynb` in VS Code or Jupyter Lab.
-2.  Click **"Run All"**.
-3.  The notebook will guide you through the Data Generation, Math Logic, and 3D Visualizations.
+| Metric | Baseline (Stochastic) | Optimized (ILP) | Delta (Improvement) |
+| :--- | :--- | :--- | :--- |
+| **Total Walking Distance** | 1,073,280 pax-m | 636,700 pax-m | **↓ 40.68%** |
+| **Average Distance per Pax** | 536.6 m | 318.3 m | **↓ 218.3 m** |
 
-### Option 2: The Standalone Script
-If you want to generate the charts immediately without opening a notebook:
-```bash
-# 1. Create a virtual environment (optional but recommended)
-python3 -m venv venv
-source venv/bin/activate
-
-# 2. Install dependencies
-pip install pandas pulp matplotlib numpy seaborn
-
-# 3. Run the analysis
-python3 run_model.py
-```
-This will verify the math and save the following images to your folder:
--   `viz_3d_operations.png`: A 3D view of gate intensity.
--   `viz_cumulative_impact.png`: A graph showing how savings accumulate.
+![Performance Comparison](images/viz_comparison_bar.png)
+*Figure 1: Comparison of total passenger walking distance between baseline and optimized scenarios.*
 
 ---
 
-## 🧠 The "Ultimate" Step-by-Step Explanation
+## 🧠 Mathematical Formulation
 
-### Step 1: The Business Problem
-Airports are like giant puzzles. You have **Flights** (Demand) and **Gates** (Supply).
--   Some gates are close to the exit (User-friendly).
--   Some gates are far away (User-hostile).
--   **Goal:** Put the biggest planes at the closest gates.
--   **Constraint:** TWO planes cannot be at the same gate at the same time.
+The problem is modeled as a discrete optimization task with the following components:
 
-### Step 2: The Data
-We simulate a busy day:
--   **Flights:** 15 random arrivals with different passenger counts (50-250 pax).
--   **Gates:** 5 gates, ranked by distance (100m to 1000m).
+### 1. Decision Variables
+Let $x_{i,j}$ be a binary decision variable such that:
+$$
+x_{i,j} = \begin{cases} 
+1 & \text{if flight } i \text{ is assigned to gate } j \\
+0 & \text{otherwise}
+\end{cases}
+$$
 
-### Step 3: The Conflict Matrix
-Before optimizing, we must know the rules. We compare every flight against every other flight.
--   *If Flight A lands at 10:00 and leaves at 11:30...*
--   *And Flight B lands at 11:00...*
--   **Overlap!** They cannot share a gate. We record this pair as a "Conflict".
+### 2. Objective Function
+Minimize the global cost function $Z$, representing the total passenger-meters walked:
+$$ \text{Minimize } Z = \sum_{i \in F} \sum_{j \in G} (x_{i,j} \cdot P_i \cdot D_j) $$
+Where:
+*   $P_i$: Number of passengers on flight $i$.
+*   $D_j$: Distance from gate $j$ to the main airport terminal exit.
 
-### Step 4: The Solver (The "Magic")
-We don't guess. We use **Integer Linear Programming**.
-We create a variable $x_{i,j}$ which is either 1 (Assign) or 0 (Don't Assign).
+### 3. Operational Constraints
+*   **Uniqueness Constraint:** Each flight $i$ must be assigned to exactly one gate $j$.
+    $$ \sum_{j \in G} x_{i,j} = 1, \quad \forall i \in F $$
+*   **Conflict Constraint:** For any two flights $(A, B)$ with overlapping schedules, they cannot occupy the same gate $j$ simultaneously.
+    $$ x_{A,j} + x_{B,j} \le 1, \quad \forall j \in G, \forall (A, B) \in \text{Conflicts} $$
 
-**The Equation:**
-$$ \text{Minimize } \sum (x_{i,j} \times \text{Passengers}_i \times \text{Distance}_j) $$
+---
 
-**The Rules:**
-1.  Every flight must go somewhere ($\sum x = 1$).
-2.  Conflicting flights cannot go to the same place ($x_A + x_B \le 1$).
+## 📈 Operational Insights
 
-### Step 5: Visual Proof
-We use `matplotlib` to prove our solution works:
--   **Gantt Chart:** Shows the schedule. No bars overlap!
--   **3D Chart:** Shows the volume of operations.
+### Optimized Flight Schedule
+The visualization below shows the gapless scheduling achieved by the solver. The system prioritizes high-capacity flights (darker bars) at gates with shorter terminal distances ($G1, G2$).
+
+![Optimized Schedule](images/viz_gantt_schedule.png)
+*Figure 2: Gantt chart depicting the optimized allocation of flights across available gates over time.*
+
+### 3.D Volumetric Analysis
+This chart visualizes the "operational pressure" on the gate system, combining time, gate ID, and passenger volume into a single 3D metric.
+
+![3D Operations](images/viz_3d_enhanced.png)
+*Figure 3: 3D Visualization of Gate Operations (Time × Gate × Passenger Volume).*
+
+---
+
+## 🚀 Implementation & Reproducibility
+
+### Repository Structure
+*   `notebooks/Airport-Gate-Solver.ipynb`: Comprehensive notebook with step-by-step mathematical derivation and analysis.
+*   `run_model.py`: Lightweight production script for running the optimization and generating core results.
+*   `generate_readme_assets.py`: Advanced visualization suite used to generate academic-grade charts.
+*   `images/` folder containing all high-resolution analytical visualizations.
+
+### Installation
+1.  **Clone the repository**
+2.  **Initialize Environment:**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    ```
+3.  **Execute Analysis:**
+    ```bash
+    python3 run_model.py
+    ```
+
+---
+
+## 🎓 Academic Context
+This project was developed for academic purposes to demonstrate the application of **Operations Research** in transportation logistics. It showcases the transition from data-driven demand modeling to prescriptive analytics using industry-standard optimization solvers.
