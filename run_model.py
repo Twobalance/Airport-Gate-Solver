@@ -131,8 +131,8 @@ for _, row in df_schedule.iterrows():
     ax.bar3d(x_pos, y_pos, z_pos, dx, dy, dz, color=color, alpha=0.8, edgecolor='black')
 ax.set_xlabel('Gate ID'); ax.set_ylabel('Time'); ax.set_zlabel('Passengers')
 ax.set_title("3D Airport Operations Volume")
-plt.savefig('viz_3d_operations.png')
-print("Saved viz_3d_operations.png")
+plt.savefig('images/viz_3d_operations.png')
+print("Saved images/viz_3d_operations.png")
 
 # Plot 2: Cumulative Savings
 df_viz = df_schedule.sort_values('Arrival').reset_index(drop=True)
@@ -146,7 +146,7 @@ plt.plot(df_viz['Flight'], df_viz['Cum_Optimized'], 'g-', label='Optimized')
 plt.fill_between(df_viz['Flight'], df_viz['Cum_Optimized'], df_viz['Cum_Random'], color='green', alpha=0.1)
 plt.title("Cumulative Walking Distance Savings")
 plt.legend()
-plt.savefig('viz_cumulative_impact.png')
-print("Saved viz_cumulative_impact.png")
+plt.savefig('images/viz_cumulative_impact.png')
+print("Saved images/viz_cumulative_impact.png")
 
 print("--- Analysis Complete ---")
