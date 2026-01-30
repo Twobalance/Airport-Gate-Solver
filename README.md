@@ -22,33 +22,6 @@ This project addresses the **Airport Gate Assignment Problem (AGAP)**, a critica
 
 ---
 
-## 🧠 Mathematical Formulation
-
-The problem is modeled as a discrete optimization task with the following components:
-
-### 1. Decision Variables
-Let $x_{i,j}$ be a binary decision variable such that:
-$$
-x_{i,j} = \begin{cases} 
-1 & \text{if flight } i \text{ is assigned to gate } j \\
-0 & \text{otherwise}
-\end{cases}
-$$
-
-### 2. Objective Function
-Minimize the global cost function $Z$, representing the total passenger-meters walked:
-$$ \text{Minimize } Z = \sum_{i \in F} \sum_{j \in G} (x_{i,j} \cdot P_i \cdot D_j) $$
-Where:
-*   $P_i$: Number of passengers on flight $i$.
-*   $D_j$: Distance from gate $j$ to the main airport terminal exit.
-
-### 3. Operational Constraints
-*   **Uniqueness Constraint:** Each flight $i$ must be assigned to exactly one gate $j$.
-    $$ \sum_{j \in G} x_{i,j} = 1, \quad \forall i \in F $$
-*   **Conflict Constraint:** For any two flights $(A, B)$ with overlapping schedules, they cannot occupy the same gate $j$ simultaneously.
-    $$ x_{A,j} + x_{B,j} \le 1, \quad \forall j \in G, \forall (A, B) \in \text{Conflicts} $$
-
----
 
 ## 📈 Operational Insights
 
